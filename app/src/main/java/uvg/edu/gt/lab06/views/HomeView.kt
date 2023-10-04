@@ -7,15 +7,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -36,34 +40,44 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
+import uvg.edu.gt.lab06.Screen
 import uvg.edu.gt.lab06.models.City
 
 @Composable
-fun HomeView(navController: NavController){
-    var cities = remember { mutableStateListOf<City>() }
-    Column( horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()) {
-        Text(text = "Select an Urban City",
+fun HomeView(navController: NavController) {
+    var (cities, setCities) = remember { mutableStateOf(emptyList<City>()) }
+    LaunchedEffect(key1 = Unit) {
+        val fetchedCities : List<City> = getCitiesList()
+        setCities(fetchedCities)
+    }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Text(
+            text = "Select an Urban City",
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
             fontSize = 24.sp,
-            fontWeight = FontWeight.Bold)
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            CoroutineScope(Dispatchers.Default).launch {
-
-                withContext(Dispatchers.Main){
-
+        LazyColumn (modifier = Modifier.fillMaxWidth()){
+            items(cities){city ->
+                Button(onClick = {
+                    navController.navigate(Screen.DisplayCityView.route + "/${city.name}")
+                },
+                    modifier = Modifier.fillMaxWidth()) {
+                    Text(text = city.name)
                 }
             }
-        }) {
-            Text(text = "Load cities")
         }
-
     }
+}
 
-suspend fun citiesList() : ArrayList<City>{
+suspend fun getCitiesList() : ArrayList<City>{
     var responseBody : String = "{}"
     val cities : ArrayList<City> = ArrayList();
 

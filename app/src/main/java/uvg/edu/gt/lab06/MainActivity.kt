@@ -36,16 +36,13 @@ class MainActivity : ComponentActivity() {
                             HomeView(navController)
                         }
                         composable(
-                            route = Screen.DisplayCityView.route + "/{imgName}/{imgURL}",
+                            route = Screen.DisplayCityView.route + "/{imgName}",
                             arguments = listOf(
-                                navArgument("imgName") { type = NavType.StringType },
-                                navArgument("imgURL") { type = NavType.StringType })
-                        ){ backStackEntry ->
+                                navArgument("imgName") { type = NavType.StringType }
+                        )){ backStackEntry ->
                             val imgName = backStackEntry.arguments?.getString("imgName")
-                            val imgURL = backStackEntry.arguments?.getString("imgURL")
                             requireNotNull(imgName) { Log.e("Error","imgName must NOT be null")}
-                            requireNotNull(imgURL) { Log.e("Error","imgURL must NOT be null")}
-                            DisplayCityView(navController, imgName, imgURL)
+                            DisplayCityView(navController, imgName)
                         }
                     }
                 }
