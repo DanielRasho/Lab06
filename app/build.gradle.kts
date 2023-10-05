@@ -56,6 +56,8 @@ dependencies {
 
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-client-logging:$ktor_version")
